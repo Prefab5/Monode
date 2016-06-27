@@ -7,7 +7,7 @@ Created: 6/26/2016
 using UnityEngine;
 using System.Collections;
 
-public class LevelController : MonoBehaviour
+public class ChunkController : MonoBehaviour
 {
 
     private static Vector2 _initialCameraPosition;
