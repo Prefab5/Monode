@@ -11,7 +11,7 @@ GameObject:
   - 212: {fileID: 21288606}
   - 61: {fileID: 6163566}
   m_Layer: 0
-  m_Name: Ground Obstacle
+  m_Name: Ground_Obstacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
