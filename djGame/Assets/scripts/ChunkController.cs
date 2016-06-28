@@ -1,5 +1,4 @@
-﻿/*
-Description: Handles creating and deleting _chunks. _chunks are created and deleted when they 
+﻿/*Description: Handles creating and deleting _chunks. _chunks are created and deleted when they 
 are certain distances from the main camera. _chunks are controlled areas of game objects.
 Created: 6/26/2016
 */
@@ -14,7 +13,7 @@ public class ChunkController : MonoBehaviour
     private Vector2 _currentCameraPosition;
     private static int _chunkNumber;
     private ArrayList _chunks = new ArrayList();
-    public bool debug = false;
+    public bool debug = true;
 
 
     void Start()
@@ -42,8 +41,7 @@ public class ChunkController : MonoBehaviour
 
         }
 
-        /*
-        If we have more than one chunk,
+        /*If we have more than one chunk,
         check each chunk to see if its far enough left to be deleted.
         */
         else
