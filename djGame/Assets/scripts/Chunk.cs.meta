@@ -1,10 +1,11 @@
 fileFormatVersion: 2
 guid: a892434946edab64cb29ff454e4869db
-timeCreated: 1466968391
+timeCreated: 1467062205
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - Ground_Obstacle: {fileID: 197040, guid: 9160984c42461804a923721fa7da7a6e, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
