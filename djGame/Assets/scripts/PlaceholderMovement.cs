@@ -9,6 +9,7 @@ using System.Collections;
 public class PlaceholderMovement : MonoBehaviour
 {
     public new bool enabled = false;
+    public float moveSpeed = 4;
 
     void Update()
     {
@@ -17,14 +18,14 @@ public class PlaceholderMovement : MonoBehaviour
         if (enabled)
         {
             //Controls movement in right direction.
-            if (Input.GetButtonDown("Horizontal") && Input.GetAxisRaw("Horizontal") > 0)
+            if (Input.GetButton("Horizontal") && Input.GetAxisRaw("Horizontal") > 0)
             {
-                transform.Translate(Vector2.right);
+                transform.Translate(new Vector2(moveSpeed * Time.deltaTime, 0));
             }
             //Controls movement in left direction.
-            else if (Input.GetButtonDown("Horizontal") && Input.GetAxisRaw("Horizontal") < 0)
+            else if (Input.GetButton("Horizontal") && Input.GetAxisRaw("Horizontal") < 0)
             {
-                transform.Translate(Vector2.left);
+                transform.Translate(new Vector2(-1 * moveSpeed * Time.deltaTime, 0));
             }
         }
     }
