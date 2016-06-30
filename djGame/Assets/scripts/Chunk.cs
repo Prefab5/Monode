@@ -108,8 +108,8 @@ public class Chunk
 
                 /*Moves the gameObject up by half the prefab's height so its sitting on the ground,
                 as opposed to in it. gameObject positions coordinate to their center.*/
-                spawnedPrefab.transform.position = new Vector2(spawnedPrefab.transform.position.x,
-                    spawnedPrefab.transform.position.y + spawnedPrefab.GetComponent<Renderer>().bounds.size.y / 2);
+                //spawnedPrefab.transform.position = new Vector2(spawnedPrefab.transform.position.x,
+                //    spawnedPrefab.transform.position.y + spawnedPrefab.GetComponent<Renderer>().bounds.size.y / 2);
 
                 //Add to array list of similiar prefabs to compare distances between each.
                 prefabsOfSameType.Add(spawnedPrefab);
