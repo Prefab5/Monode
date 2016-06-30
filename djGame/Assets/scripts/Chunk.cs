@@ -35,7 +35,7 @@ public class Chunk
         at a 10% chance per unit,
         with none closer than 5 units together,
         but none any farther than 10 units apart.*/
-        SpawnPrefab("Ground_Obstacle", .10f, 5, 10);
+        SpawnPrefab("Ground_Obstacle", .10f, 5, 10, 0);
 
         //If you want to spawn something rare, than do this.
         //SpawnPrefab("Rare_Thing", .02f, 0, chunkWidth);
@@ -69,7 +69,7 @@ public class Chunk
     private void SpawnPrefab(string prefabName,
         float spawnChancePerUnit,
         int noCloserThan,
-        int atleastOnePer)
+        int atleastOnePer, float height)
     {
         /*Clamps parameter [spawnChancePerUnit] so that my code doesn't crash if someone
         passes something like 5000 into it. It will just equate to 1 instead.*/
@@ -77,7 +77,7 @@ public class Chunk
 
         /*At instantiation this is the leftmost coordinate in chunk. This will 
         be the Vector2 we move forward and possibly spawn the prefabs at.*/
-        Vector2 indexPosition = new Vector2(position.x - chunkWidth / 2, 0);
+        Vector2 indexPosition = new Vector2(position.x - chunkWidth / 2, height);
 
         /*We will store any spawned prefabs of [prefabName] in this temp array so that
         we can compare across them their distances from one another to make sure
