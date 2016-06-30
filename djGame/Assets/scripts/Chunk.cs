@@ -35,7 +35,7 @@ public class Chunk
         at a 10% chance per unit,
         with none closer than 5 units together,
         but none any farther than 10 units apart.*/
-        SpawnPrefab("Ground_Obstacle", .10f, 5, 10, 0);
+        SpawnPrefab("Ground_Obstacle", .10f, 5, 10, 0f);
 
         //If you want to spawn something rare, than do this.
         //SpawnPrefab("Rare_Thing", .02f, 0, chunkWidth);
@@ -146,8 +146,8 @@ public class Chunk
 
                 /*Moves the gameObject up by half the prefab's height so its sitting on the ground,
                 as opposed to in it.*/
-                spawnedPrefab.transform.position = new Vector2(spawnedPrefab.transform.position.x,
-                    spawnedPrefab.transform.position.y + spawnedPrefab.GetComponent<Renderer>().bounds.size.y / 2);
+                //spawnedPrefab.transform.position = new Vector2(spawnedPrefab.transform.position.x,
+                //    spawnedPrefab.transform.position.y + spawnedPrefab.GetComponent<Renderer>().bounds.size.y / 2);
 
 
                 //Add to array list of similiar prefabs to compare distances between each.
