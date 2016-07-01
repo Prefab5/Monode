@@ -6,26 +6,17 @@ Created: 6/26/16
 using UnityEngine;
 using System.Collections;
 
-public class Chunk
+public class Chunk : MonoBehaviour
 {
     //Width of a chunk in Unity units. A larger chunk will load more objects at once.
     public const int chunkWidth = 28;
-    //Center position of chunk.
-    public Vector2 position;
+
     //Identification number of chunk.
     public int chunkNumber;
 
-    //Arraylist of all gameObjects in this chunk.
-    private ArrayList _gameObjects = new ArrayList();
-
-    //Constructor.
-    public Chunk(Vector2 position, int chunkNumber)
+    public void Start()
     {
-        this.position = position;
-        this.chunkNumber = chunkNumber;
-
         Load();
-
     }
 
     //Any objects in the chunk should be spawned here.
@@ -34,32 +25,29 @@ public class Chunk
         /*Spawn ground obstacles,
         at a 10% chance per unit,
         with none closer than 5 units together,
-        but none any farther than 10 units apart.*/
+        but none any farther than 10 units apart, at a height of 0.*/
         SpawnPrefab("Ground_Obstacle", .10f, 5, 10, 0f);
+
+        SpawnPrefab("Ground", 1f, 0, chunkWidth, -1);
 
         //If you want to spawn something rare, than do this.
         //SpawnPrefab("Rare_Thing", .02f, 0, chunkWidth);
         //It will spawn at a 2% chance and disregards proximity.    
 
-        Debug.Log("Chunk #" + chunkNumber + " loaded.");
     }
 
     //Any gameObjects loaded in this chunk are despawned in Unload().
     public void Unload()
     {     
-        //For each gameObject in gameObjects.
-        for (int i = 0; i < _gameObjects.Count; i++)
+        //For each child gameObjects.
+        for (int i = 0; i < gameObject.transform.childCount; i++)
         {
             //Remove it from scene.
-            Object.Destroy((GameObject)_gameObjects[i]);
-
-            //Remove it from array.
-            _gameObjects.Remove(((GameObject)_gameObjects[i]));
+            Object.Destroy(gameObject.transform.GetChild(i));
 
             //Remove from i so that we don't skip objects in the ArrayList.
             i--;
         }
-
 
         Debug.Log("Chunk #" + chunkNumber + " unloaded.");
     }
@@ -77,7 +65,7 @@ public class Chunk
 
         /*At instantiation this is the leftmost coordinate in chunk. This will 
         be the Vector2 we move forward and possibly spawn the prefabs at.*/
-        Vector2 indexPosition = new Vector2(position.x - chunkWidth / 2, height);
+        Vector2 indexPosition = new Vector2(transform.position.x - chunkWidth / 2, height);
 
         /*We will store any spawned prefabs of [prefabName] in this temp array so that
         we can compare across them their distances from one another to make sure
@@ -91,10 +79,11 @@ public class Chunk
             /*If this is the first chunk and we are on the first loop iteration,
             go ahead and skip the first 7 units. We don't want to spawn anything
             too close to the player.*/
-            if (chunkNumber == 1 && i == 0)
+            if (chunkNumber == 1 && i == 0 && prefabName != "Ground")
             {
-                i = 7;
-                indexPosition.x += 7;
+                print("Offset");
+                i = 15;
+                indexPosition.x += 15;
             }
 
             //This is the if statement that will spawn a prefab by chance, according to
@@ -106,24 +95,17 @@ public class Chunk
                 GameObject spawnedPrefab = Object.Instantiate(Resources.Load(prefabName),
                     indexPosition, Quaternion.Euler(0, 0, 0)) as GameObject;
 
-                /*Moves the gameObject up by half the prefab's height so its sitting on the ground,
-                as opposed to in it. gameObject positions coordinate to their center.*/
-                //spawnedPrefab.transform.position = new Vector2(spawnedPrefab.transform.position.x,
-                //    spawnedPrefab.transform.position.y + spawnedPrefab.GetComponent<Renderer>().bounds.size.y / 2);
+                //Set the gameObject's parent as the chunk so that when the chunk moves, the prefab moves.
+                spawnedPrefab.transform.parent = transform;
 
                 //Add to array list of similiar prefabs to compare distances between each.
                 prefabsOfSameType.Add(spawnedPrefab);
 
-                /*Add to array list of all gameObjects in chunk so on unload we can 
-                conveniently delete all of them.*/
-                _gameObjects.Add(spawnedPrefab);
+                spawnedPrefab.transform.name = spawnedPrefab.transform.name.Replace("(Clone)", " " + prefabsOfSameType.Count);
 
                 //If the last prefab spawned is closer than [noCloserThan], delete it.
                 if (prefabsOfSameType.Count >= 2 && Mathf.Abs(((GameObject)prefabsOfSameType[prefabsOfSameType.Count - 2]).transform.position.x - spawnedPrefab.transform.position.x) <= noCloserThan)
                 {
-
-                    //Remove it from the total gameObjects array.
-                    _gameObjects.Remove(spawnedPrefab);
 
                     //Remove it from the similiar prefabs array.
                     prefabsOfSameType.Remove(spawnedPrefab);
@@ -134,27 +116,24 @@ public class Chunk
                 }
             }
 
-            if ((prefabsOfSameType.Count == 0 && Mathf.Abs((position.x - chunkWidth / 2) - indexPosition.x) >= atleastOnePer) 
+            if ((prefabsOfSameType.Count == 0 && Mathf.Abs((transform.position.x - chunkWidth / 2) - indexPosition.x) >= atleastOnePer) 
                 || 
                 (prefabsOfSameType.Count != 0 && Mathf.Abs(((GameObject)prefabsOfSameType[prefabsOfSameType.Count - 1]).transform.position.x - indexPosition.x) >= atleastOnePer))
             {
 
                 /*Creates a gameObject clone of the passed prefab from within the Resources folder at
                 the current indexPosition.*/
-                GameObject spawnedPrefab = Object.Instantiate(Resources.Load("Ground_Obstacle"),
+                GameObject spawnedPrefab = Object.Instantiate(Resources.Load(prefabName),
                     indexPosition, Quaternion.Euler(0, 0, 0)) as GameObject;
 
-                /*Moves the gameObject up by half the prefab's height so its sitting on the ground,
-                as opposed to in it.*/
-                //spawnedPrefab.transform.position = new Vector2(spawnedPrefab.transform.position.x,
-                //    spawnedPrefab.transform.position.y + spawnedPrefab.GetComponent<Renderer>().bounds.size.y / 2);
-
+                //Set the gameObject's parent as the chunk so that when the chunk moves, the prefab moves.
+                spawnedPrefab.transform.parent = transform;
 
                 //Add to array list of similiar prefabs to compare distances between each.
                 prefabsOfSameType.Add(spawnedPrefab);
 
-                //Add to array list of all prefabs in chunk so on unload we can delete all of them.
-                _gameObjects.Add(spawnedPrefab);
+                spawnedPrefab.transform.name = spawnedPrefab.transform.name.Replace("(Clone)", " " + prefabsOfSameType.Count);
+
             }
 
             indexPosition.x++;
