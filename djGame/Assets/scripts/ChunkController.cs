@@ -14,6 +14,10 @@ public class ChunkController : MonoBehaviour
     private static int _chunkCount;
     public bool debug = true;
     public float chunkMoveSpeed = 4f;
+    public bool _collision = false; 
+    private float _impactSpeedDecay = 0.1f;
+    private float _impactSpeedReduction = 0.1f;
+    public float _knockDownTime = 1f;
 
     void Start()
     {
@@ -98,15 +102,49 @@ public class ChunkController : MonoBehaviour
 
     void ChunkMovement()
     {
-        for(int i = 0; i < gameObject.transform.childCount; i++)
+        if (!_collision)
         {
-            gameObject.transform.GetChild(i).transform.Translate(new Vector2(-1 * chunkMoveSpeed * Time.deltaTime, 0));
+            LeftMovement();
+        }
+        else
+        {
+            ChunkRebound();  
+        }
+    }
+
+    public void ResumeMovement()
+    {
+        _collision = false;
+    }
+
+    private void ChunkRebound()
+    {
+        for (int i = 0; i < gameObject.transform.childCount; i++)
+        {
+            gameObject.transform.GetChild(i).transform.Translate(new Vector2(1 * (chunkMoveSpeed - _impactSpeedReduction) * Time.deltaTime, 0));
+        }
+
+        if (_impactSpeedReduction < chunkMoveSpeed)
+        {
+            _impactSpeedReduction += _impactSpeedDecay;
+        }
+        else
+        {
+            _impactSpeedReduction = chunkMoveSpeed;
         }
     }
 
     public void PlayerCollision()
     {
+        _collision = true;
+    }
 
+    private void LeftMovement()
+    {
+        for (int i = 0; i < gameObject.transform.childCount; i++)
+        {
+            gameObject.transform.GetChild(i).transform.Translate(new Vector2(-1 * chunkMoveSpeed * Time.deltaTime, 0));
+        }
     }
 
 }
