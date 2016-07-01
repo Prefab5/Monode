@@ -25,8 +25,10 @@ public class Chunk : MonoBehaviour
         /*Spawn ground obstacles,
         at a 10% chance per unit,
         with none closer than 5 units together,
-        but none any farther than 10 units apart.*/
+        but none any farther than 10 units apart, at a height of 0.*/
         SpawnPrefab("Ground_Obstacle", .10f, 5, 10, 0f);
+
+        SpawnPrefab("Ground", 1f, 0, chunkWidth, -1);
 
         //If you want to spawn something rare, than do this.
         //SpawnPrefab("Rare_Thing", .02f, 0, chunkWidth);
@@ -77,10 +79,11 @@ public class Chunk : MonoBehaviour
             /*If this is the first chunk and we are on the first loop iteration,
             go ahead and skip the first 7 units. We don't want to spawn anything
             too close to the player.*/
-            if (chunkNumber == 1 && i == 0)
+            if (chunkNumber == 1 && i == 0 && prefabName != "Ground")
             {
-                i = 7;
-                indexPosition.x += 7;
+                print("Offset");
+                i = 15;
+                indexPosition.x += 15;
             }
 
             //This is the if statement that will spawn a prefab by chance, according to

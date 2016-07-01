@@ -31,6 +31,7 @@ public class ChunkController : MonoBehaviour
 
         //Set parent for hierachy orginizational purposes.
         chunk.transform.parent = transform;
+        chunk.GetComponent<Chunk>().chunkNumber = _chunkCount;
         chunk.transform.name = "Chunk " + _chunkCount;
         
         _chunkCount++;
@@ -115,6 +116,7 @@ public class ChunkController : MonoBehaviour
     public void ResumeMovement()
     {
         _collision = false;
+        _impactSpeedReduction = _impactSpeedDecay;
     }
 
     private void ChunkRebound()
