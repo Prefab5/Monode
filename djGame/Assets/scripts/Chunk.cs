@@ -81,7 +81,6 @@ public class Chunk : MonoBehaviour
             too close to the player.*/
             if (chunkNumber == 1 && i == 0 && prefabName != "Ground")
             {
-                print("Offset");
                 i = 15;
                 indexPosition.x += 15;
             }
