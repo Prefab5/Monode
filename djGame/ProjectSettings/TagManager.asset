@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - collision_obstacle
+  - pickups
+  - Bullets
   - Ground
   layers:
   - Default

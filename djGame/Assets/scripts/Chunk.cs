@@ -26,7 +26,9 @@ public class Chunk : MonoBehaviour
         at a 10% chance per unit,
         with none closer than 5 units together,
         but none any farther than 10 units apart, at a height of 0.*/
-        SpawnPrefab("Ground_Obstacle", .10f, 5, 10, 0f);
+        SpawnPrefab("Bullets", .08f, 17, chunkWidth, 1f);
+		SpawnPrefab("Bullets", .05f, 17, chunkWidth, 2f);
+		SpawnPrefab("Ground_Obstacle", .10f, 5, 10, 0f);
 
         SpawnPrefab("Ground", 1f, 0, chunkWidth, -1);
 

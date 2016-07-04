@@ -29,12 +29,18 @@ public class PlayerController : MonoBehaviour
 	public GameObject scoreObject;
 	private ScoreController score;
 
+	//For controlling the ammo
+	public GameObject ammoObject;
+	private AmmoController ammo;
 
 	void Start ()
 	{
 		rb2D = GetComponent<Rigidbody2D> ();
 		score = scoreObject.GetComponent<ScoreController> ();
 		score.SetScoreRate (10);
+		ammo = ammoObject.GetComponent<AmmoController> ();
+		ammo.SetAmmoRate (24);
+		//ammo.IncrementAmmo ();
 	}
 
 	void Update ()
@@ -67,6 +73,12 @@ public class PlayerController : MonoBehaviour
 			collision = true;
 			score.PauseScore ();
 		}
+
+		if (other.gameObject.tag == "Bullets") {
+			ammo.IncrementAmmo ();
+			Destroy (other.gameObject);
+		}
+
 	}
 
 	void KnockDown ()
