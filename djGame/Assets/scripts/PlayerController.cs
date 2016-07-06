@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
 		score = scoreObject.GetComponent<ScoreController> ();
 		score.SetScoreRate (10);
 		ammo = ammoObject.GetComponent<AmmoController> ();
-		ammo.SetAmmoRate (24);
+		//ammo.SetAmmoRate (24);
 		//ammo.IncrementAmmo ();
 	}
 
@@ -75,7 +75,8 @@ public class PlayerController : MonoBehaviour
 		}
 
 		if (other.gameObject.tag == "Bullets") {
-			ammo.IncrementAmmo ();
+			//Gets the ammo set in the script that randomizes the AmmoRate on the prefab
+			ammo.IncrementAmmo (other.GetComponent<AmmoPrefab>().getAmmoForPrefab());
 			Destroy (other.gameObject);
 		}
 
