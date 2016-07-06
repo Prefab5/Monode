@@ -12,31 +12,39 @@ using System.Collections;
 public class ScoreController : MonoBehaviour
 {
 
-	public int scoreRate;
-	private float score;
+	public int scoreRate = 0;
+	private float score = 0;
 	private bool pause = false;
-
-	void Start ()
-	{
-
-	}
 
 	void Update ()
 	{		
-		IncrementScore ();	
+		IncrementScore ();
+		UpdateScore ();
+	}
+
+	public void IncreaseScore (int amount)
+	{
+		score += amount;
+	}
+
+	public void DescreaseScore (int amount)
+	{
+		score -= amount;
+		if (score < 0) {
+			score = 0;
+		}
 	}
 
 	void IncrementScore ()
 	{
-		if (scoreRate != null && !pause) {
+		if (!pause) {
 			score += scoreRate * Time.deltaTime;
-			UpdateScore ();
 		}
 	}
 
 	void UpdateScore ()
 	{
-		gameObject.GetComponent<GUIText> ().text = "Score: " + Mathf.Round (score).ToString();
+		gameObject.GetComponent<GUIText> ().text = "Score: " + Mathf.Round (score).ToString ();
 	}
 
 	public void PauseScore ()

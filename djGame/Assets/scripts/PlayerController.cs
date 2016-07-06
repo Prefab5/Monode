@@ -29,12 +29,19 @@ public class PlayerController : MonoBehaviour
 	public GameObject scoreObject;
 	private ScoreController score;
 
+	public GameObject Health;
+	private HealthController healthController;
+
+
 
 	void Start ()
 	{
 		rb2D = GetComponent<Rigidbody2D> ();
+
 		score = scoreObject.GetComponent<ScoreController> ();
 		score.SetScoreRate (10);
+
+		healthController = Health.GetComponent<HealthController> ();
 	}
 
 	void Update ()
@@ -66,6 +73,8 @@ public class PlayerController : MonoBehaviour
 			chunkController.PlayerCollision ();
 			collision = true;
 			score.PauseScore ();
+			healthController.LoseHealth ();
+
 		}
 	}
 
