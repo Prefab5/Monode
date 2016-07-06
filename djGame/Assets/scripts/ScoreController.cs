@@ -28,10 +28,12 @@ public class ScoreController : MonoBehaviour
 
 	void IncrementScore ()
 	{
+		#pragma warning disable 472 //Adding pragma to ignore the warning produced by comparing an int to null -TN
 		if (scoreRate != null && !pause) {
 			score += scoreRate * Time.deltaTime;
 			UpdateScore ();
 		}
+		#pragma warning restore 472
 	}
 
 	void UpdateScore ()
