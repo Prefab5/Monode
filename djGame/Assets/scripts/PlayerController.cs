@@ -46,6 +46,21 @@ public class PlayerController : MonoBehaviour
 
 	void Update ()
 	{
+
+		int fingerCount = 0;
+		foreach (Touch touch in Input.touches) {
+			if (touch.phase != TouchPhase.Ended && touch.phase != TouchPhase.Canceled)
+				fingerCount++;
+			if (isGrounded) {
+				rb2D.AddForce (new Vector2 (0, jumpHeight));
+			}
+		}
+		if (fingerCount > 0)
+			print("User has " + fingerCount + " finger(s) touching the screen");
+		
+
+
+
 		JumpControl ();
 
 		if (collision) {
@@ -64,6 +79,11 @@ public class PlayerController : MonoBehaviour
 			rb2D.AddForce (new Vector2 (0, jumpHeight));
 
 		}
+
+
+
+
+
 	}
 
 	void OnTriggerEnter2D (Collider2D other)
