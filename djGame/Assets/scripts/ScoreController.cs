@@ -12,39 +12,33 @@ using System.Collections;
 public class ScoreController : MonoBehaviour
 {
 
-	public int scoreRate = 0;
-	private float score = 0;
+	public int scoreRate;
+	private float score;
 	private bool pause = false;
+
+	void Start ()
+	{
+
+	}
 
 	void Update ()
 	{		
-		IncrementScore ();
-		UpdateScore ();
-	}
-
-	public void IncreaseScore (int amount)
-	{
-		score += amount;
-	}
-
-	public void DescreaseScore (int amount)
-	{
-		score -= amount;
-		if (score < 0) {
-			score = 0;
-		}
+		IncrementScore ();	
 	}
 
 	void IncrementScore ()
 	{
-		if (!pause) {
+		#pragma warning disable 472 //Adding pragma to ignore the warning produced by comparing an int to null -TN
+		if (scoreRate != null && !pause) {
 			score += scoreRate * Time.deltaTime;
+			UpdateScore ();
 		}
+		#pragma warning restore 472
 	}
 
 	void UpdateScore ()
 	{
-		gameObject.GetComponent<GUIText> ().text = "Score: " + Mathf.Round (score).ToString ();
+		gameObject.GetComponent<GUIText> ().text = "Score: " + Mathf.Round (score).ToString();
 	}
 
 	public void PauseScore ()

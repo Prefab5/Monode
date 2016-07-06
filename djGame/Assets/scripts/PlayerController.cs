@@ -29,19 +29,18 @@ public class PlayerController : MonoBehaviour
 	public GameObject scoreObject;
 	private ScoreController score;
 
-	public GameObject Health;
-	private HealthController healthController;
-
-
+	//For controlling the ammo
+	public GameObject ammoObject;
+	private AmmoController ammo;
 
 	void Start ()
 	{
 		rb2D = GetComponent<Rigidbody2D> ();
-
 		score = scoreObject.GetComponent<ScoreController> ();
 		score.SetScoreRate (10);
-
-		healthController = Health.GetComponent<HealthController> ();
+		ammo = ammoObject.GetComponent<AmmoController> ();
+		//ammo.SetAmmoRate (24);
+		//ammo.IncrementAmmo ();
 	}
 
 	void Update ()
@@ -73,9 +72,14 @@ public class PlayerController : MonoBehaviour
 			chunkController.PlayerCollision ();
 			collision = true;
 			score.PauseScore ();
-			healthController.LoseHealth ();
-
 		}
+
+		if (other.gameObject.tag == "Bullets") {
+			//Gets the ammo set in the script that randomizes the AmmoRate on the prefab
+			ammo.IncrementAmmo (other.GetComponent<AmmoPrefab>().getAmmoForPrefab());
+			Destroy (other.gameObject);
+		}
+
 	}
 
 	void KnockDown ()
