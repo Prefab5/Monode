@@ -21,7 +21,8 @@ public class PlayerController : MonoBehaviour
 	public Transform groundPoint;
 	public float groundPointRadius;
 	public LayerMask groundMask;
-	bool isGrounded;
+	private bool isGrounded;
+	private int timesJumped = 0;
 
 	Rigidbody2D rb2D;
 
@@ -47,21 +48,7 @@ public class PlayerController : MonoBehaviour
 	void Update ()
 	{
 
-		int fingerCount = 0;
-		foreach (Touch touch in Input.touches) {
-			if (touch.phase != TouchPhase.Ended && touch.phase != TouchPhase.Canceled)
-				fingerCount++;
-			if (isGrounded) {
-				rb2D.AddForce (new Vector2 (0, jumpHeight));
-			}
-		}
-		if (fingerCount > 0)
-			print("User has " + fingerCount + " finger(s) touching the screen");
-		
-
-
-
-		JumpControl ();
+		PlayerControls ();
 
 		if (collision) {
 			KnockDown ();
@@ -69,20 +56,43 @@ public class PlayerController : MonoBehaviour
 
 	}
 
-	void JumpControl ()
-	{
+	void PlayerControls(){
+
 		//Checks to see if player is in contact with ground directly beneath them.
 		isGrounded = Physics2D.OverlapCircle (groundPoint.position, groundPointRadius, groundMask);
 
-		//Jumping controls.
+		//Desktop Controls
+		JumpControls();
+
+		//MobileControls;;
+		MobileJumpControls();
+
+	}
+
+	void MobileJumpControls(){
+		int fingerCount = 0;
+
+		foreach (Touch touch in Input.touches) {
+			if (touch.phase != TouchPhase.Ended && touch.phase != TouchPhase.Canceled)
+				fingerCount++;
+			if (isGrounded) {
+				rb2D.AddForce (new Vector2 (0, jumpHeight));
+				timesJumped++;
+				print (timesJumped);
+			}
+		}
+	}
+
+	void JumpControls ()
+	{
 		if (Input.GetKeyDown (KeyCode.Space) && isGrounded) {
-			rb2D.AddForce (new Vector2 (0, jumpHeight));
+			if (isGrounded) {
+				rb2D.AddForce (new Vector2 (0, jumpHeight));
+				timesJumped++;
+				print (timesJumped);
+			}
 
 		}
-
-
-
-
 
 	}
 
