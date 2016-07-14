@@ -35,6 +35,8 @@ public class PlayerController : MonoBehaviour
 	public GameObject Health;
 	private HealthController healthController;
 
+	private bool touched = false;
+
 
 
 	void Start ()
@@ -69,6 +71,19 @@ public class PlayerController : MonoBehaviour
 			rb2D.AddForce (new Vector2 (0, jumpHeight));
 
 		}
+
+		foreach (Touch touch in Input.touches) {
+			if (touch.phase != TouchPhase.Ended && touch.phase != TouchPhase.Canceled) {
+				if (isGrounded && !paused && !touched) {
+					rb2D.AddForce (new Vector2 (0, jumpHeight));
+					touched = true;
+				}
+			}
+		}
+		if (Input.touches.Length == 0) {
+			touched = false;
+		}
+
 	}
 
 	void OnTriggerEnter2D (Collider2D other)
