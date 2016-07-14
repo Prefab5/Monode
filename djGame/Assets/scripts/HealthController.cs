@@ -5,49 +5,77 @@ using UnityEngine.SceneManagement;
 
 public class HealthController : MonoBehaviour
 {
+	private float totalLength;
+	private float currentLength;
 
-	private int health = 3;
+	private float maxHealth = 100;
+	private float currentHealth;
+	private float endingHealth;
 
-	public void GiveHealth ()
-	{
-		health++;
-		UpdateHealth ();
+	private float timeSteady = 0;
+
+	public GameObject HealthFade;
+
+	void Start(){
+		currentHealth = maxHealth;
+		endingHealth = currentHealth;
+		totalLength = GetComponent<RectTransform> ().sizeDelta.x;
+		currentLength = totalLength;
 	}
 
-	public void LoseHealth ()
-	{
-		health--;
-		UpdateHealth ();
-	}
-
-	private void UpdateHealth ()
-	{
-		switch (health) {
-		case 0:
-			gameObject.transform.GetChild (0).GetComponent<Image> ().sprite = Resources.Load <Sprite> ("EmptyHeart");
-			gameObject.transform.GetChild (1).GetComponent<Image> ().sprite = Resources.Load <Sprite> ("EmptyHeart");
-			gameObject.transform.GetChild (2).GetComponent<Image> ().sprite = Resources.Load <Sprite> ("EmptyHeart");
+	void Update(){
+		if (currentHealth <= 0) {
 			SceneManager.LoadScene ("scenes/game_over");
-			break;
+		} else {
 
-		case 1:
-			gameObject.transform.GetChild (0).GetComponent<Image> ().sprite = Resources.Load <Sprite> ("Heart");
-			gameObject.transform.GetChild (1).GetComponent<Image> ().sprite = Resources.Load <Sprite> ("EmptyHeart");
-			gameObject.transform.GetChild (2).GetComponent<Image> ().sprite = Resources.Load <Sprite> ("EmptyHeart");
-			break;
+			_HealthFade ();
 
-		case 2:
-				
-			gameObject.transform.GetChild (0).GetComponent<Image> ().sprite = Resources.Load <Sprite> ("Heart");
-			gameObject.transform.GetChild (1).GetComponent<Image> ().sprite = Resources.Load <Sprite> ("Heart");
-			gameObject.transform.GetChild (2).GetComponent<Image> ().sprite = Resources.Load <Sprite> ("EmptyHeart");
-			break;
+			HealthEasing ();
 
-		case 3:
-			gameObject.transform.GetChild (0).GetComponent<Image> ().sprite = Resources.Load <Sprite> ("Heart");
-			gameObject.transform.GetChild (1).GetComponent<Image> ().sprite = Resources.Load <Sprite> ("Heart");
-			gameObject.transform.GetChild (2).GetComponent<Image> ().sprite = Resources.Load <Sprite> ("Heart");
-			break;
+			currentLength = (currentHealth / maxHealth) * totalLength;
+			GetComponent<RectTransform> ().sizeDelta = new Vector2 (currentLength, GetComponent<RectTransform> ().sizeDelta.y);
+			GetComponent<RectTransform> ().anchoredPosition = new Vector2 ((currentLength / 2) + 7.65f, GetComponent<RectTransform> ().anchoredPosition.y);
+
+
+
+		}
+	}
+
+	private void _HealthFade(){
+
+		if (currentHealth == endingHealth) {
+			timeSteady += Time.deltaTime;
+		} else {
+			timeSteady = 0;
+		}
+
+		if(timeSteady >= 0.5f){
+			HealthFade.GetComponent<HealthFade> ().Adjust(endingHealth);
+		}
+
+	}
+
+	public void GiveHealth (int amount)
+	{
+		endingHealth+= amount;
+	}
+
+	public void LoseHealth (int amount)
+	{
+		endingHealth-= amount;
+	}
+
+	//Eases the hp bar movement.
+	void HealthEasing(){
+		float change = Mathf.Abs (currentHealth - endingHealth);
+		if (currentHealth > endingHealth) {
+			currentHealth -= change / 4;
+		} else {
+			currentHealth += change / 4;
+		}
+
+		if (change <= 0.25f) {
+			currentHealth = endingHealth;
 		}
 	}
 
