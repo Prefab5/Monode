@@ -7,6 +7,6 @@ public class Restart : MonoBehaviour
 
 	public void _Restart ()
 	{
-		SceneManager.LoadScene ("scenes/test_scene");		
+		SceneManager.LoadScene ("scenes/Master Scene");		
 	}
 }
