@@ -7,7 +7,6 @@
  * ******************************************************************/
 
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 
 public class ScoreController : MonoBehaviour
@@ -45,7 +44,7 @@ public class ScoreController : MonoBehaviour
 
 	void UpdateScore ()
 	{
-		gameObject.GetComponent<Text> ().text = "Score: " + Mathf.Round (score).ToString ();
+		gameObject.GetComponent<GUIText> ().text = "Score: " + Mathf.Round (score).ToString ();
 	}
 
 	public void PauseScore ()

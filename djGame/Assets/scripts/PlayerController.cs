@@ -32,6 +32,9 @@ public class PlayerController : MonoBehaviour
 	public GameObject Health;
 	private HealthController healthController;
 
+	public GameObject Pause;
+	private bool paused = false;
+
 
 
 	void Start ()
@@ -59,8 +62,13 @@ public class PlayerController : MonoBehaviour
 		//Checks to see if player is in contact with ground directly beneath them.
 		isGrounded = Physics2D.OverlapCircle (groundPoint.position, groundPointRadius, groundMask);
 
+		/*Check to see if game is paused. We don't want them adding jumpforce
+		to the character while the game is paused.*/
+		paused = Pause.GetComponent<Pause> ().paused;
+
+
 		//Jumping controls.
-		if (Input.GetKeyDown (KeyCode.Space) && isGrounded) {
+		if (Input.GetKeyDown (KeyCode.Space) && isGrounded && !paused) {
 			rb2D.AddForce (new Vector2 (0, jumpHeight));
 
 		}
@@ -73,7 +81,7 @@ public class PlayerController : MonoBehaviour
 			chunkController.PlayerCollision ();
 			collision = true;
 			score.PauseScore ();
-			healthController.LoseHealth (20);
+			healthController.LoseHealth ();
 
 		}
 	}
