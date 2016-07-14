@@ -73,7 +73,7 @@ public class PlayerController : MonoBehaviour
 			chunkController.PlayerCollision ();
 			collision = true;
 			score.PauseScore ();
-			healthController.LoseHealth ();
+			healthController.LoseHealth (20);
 
 		}
 	}
