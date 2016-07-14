@@ -23,6 +23,9 @@ public class PlayerController : MonoBehaviour
 	public LayerMask groundMask;
 	bool isGrounded;
 
+	public GameObject pause;
+	private bool paused;
+
 	Rigidbody2D rb2D;
 
 	//For controlling the score.
@@ -59,8 +62,10 @@ public class PlayerController : MonoBehaviour
 		//Checks to see if player is in contact with ground directly beneath them.
 		isGrounded = Physics2D.OverlapCircle (groundPoint.position, groundPointRadius, groundMask);
 
+		paused = pause.GetComponent<Pause> ().paused;
+
 		//Jumping controls.
-		if (Input.GetKeyDown (KeyCode.Space) && isGrounded) {
+		if (Input.GetKeyDown (KeyCode.Space) && isGrounded && !paused) {
 			rb2D.AddForce (new Vector2 (0, jumpHeight));
 
 		}
