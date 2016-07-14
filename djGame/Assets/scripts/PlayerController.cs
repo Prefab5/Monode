@@ -5,6 +5,7 @@
  * **********************************************/
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour
@@ -73,10 +74,14 @@ public class PlayerController : MonoBehaviour
 		}
 
 		foreach (Touch touch in Input.touches) {
+
 			if (touch.phase != TouchPhase.Ended && touch.phase != TouchPhase.Canceled) {
-				if (isGrounded && !paused && !touched) {
+				if (isGrounded && !paused && !touched && !EventSystem.current.IsPointerOverGameObject(touch.fingerId)) {
 					rb2D.AddForce (new Vector2 (0, jumpHeight));
 					touched = true;
+				}
+				if (EventSystem.current.IsPointerOverGameObject (touch.fingerId)) {
+					print ("UI");
 				}
 			}
 		}
