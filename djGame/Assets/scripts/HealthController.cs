@@ -14,7 +14,11 @@ public class HealthController : MonoBehaviour
 
 	private float timeSteady = 0;
 
+	public bool gameOver = false;
+
 	public GameObject HealthFade;
+
+	public GameObject gameOverScreen;
 
 	void Start(){
 		currentHealth = maxHealth;
@@ -23,9 +27,14 @@ public class HealthController : MonoBehaviour
 		currentLength = totalLength;
 	}
 
-	void Update(){
+	void FixedUpdate(){
 		if (currentHealth <= 0) {
-			SceneManager.LoadScene ("scenes/game_over");
+			gameOverScreen.SetActive(true);
+			Time.timeScale = 0;
+			gameOver = true;
+
+
+
 		} else {
 
 			_HealthFade ();
@@ -39,6 +48,7 @@ public class HealthController : MonoBehaviour
 
 
 		}
+
 	}
 
 	private void _HealthFade(){

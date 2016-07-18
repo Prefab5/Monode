@@ -46,5 +46,6 @@ public class HealthFade : MonoBehaviour {
 		if (change <= 1) {
 			currentHealth = endingHealth;
 		}
+			
 	}
 }
