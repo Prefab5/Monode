@@ -6,6 +6,7 @@ TagManager:
   tags:
   - collision_obstacle
   - Ground
+  - Scenery
   layers:
   - Default
   - TransparentFX
