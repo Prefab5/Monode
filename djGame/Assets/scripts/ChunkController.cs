@@ -14,6 +14,8 @@ public class ChunkController : MonoBehaviour
     private static int _chunkCount;
     public bool debug = true;
     public float chunkMoveSpeed = 4f;
+	private int chunkWidth = 10;
+
     public bool _collision = false; 
     private float _impactSpeedDecay = 0.1f;
     private float _impactSpeedReduction = 0.1f;
@@ -21,13 +23,16 @@ public class ChunkController : MonoBehaviour
 
     void Start()
     {
+		ConfigureChunkWidth ();
+
         _initialCameraPosition = Camera.main.transform.position;
         _chunkCount = 1;
 
         //Creates first chunk where the camera is.
         GameObject chunk = Object.Instantiate(Resources.Load("Chunk"),
-                    _initialCameraPosition + new Vector2(Chunk.chunkWidth / 4, 0), 
+                    _initialCameraPosition + new Vector2(chunkWidth / 4, 0), 
                     Quaternion.Euler(0, 0, 0)) as GameObject;
+		chunk.GetComponent<Chunk> ().chunkWidth = chunkWidth;
 
         //Set parent for hierachy orginizational purposes.
         chunk.transform.parent = transform;
@@ -38,6 +43,18 @@ public class ChunkController : MonoBehaviour
 
 
     }
+
+	private void ConfigureChunkWidth (){
+
+
+		float screenWidth = Camera.main.orthographicSize * Screen.width / Screen.height * 4;
+
+		if (screenWidth > chunkWidth) {
+			//+5 to give th 5 units of travel time to load the next chunk.
+			chunkWidth = Mathf.CeilToInt (screenWidth+4);
+		}
+
+	}
 
 
     void Update()
@@ -54,12 +71,13 @@ public class ChunkController : MonoBehaviour
         //If there is only one chunk right now and we soon need another, make another.    
         if (gameObject.transform.childCount == 1)
         {
-            if (_currentCameraPosition.x >= gameObject.transform.GetChild(0).position.x + Chunk.chunkWidth / 4)
+            if (_currentCameraPosition.x >= gameObject.transform.GetChild(0).position.x + chunkWidth / 4)
             {
                
                 
                 GameObject chunk = Object.Instantiate(Resources.Load("Chunk"),
-                    gameObject.transform.GetChild(0).position + new Vector3(Chunk.chunkWidth, 0, 0), Quaternion.Euler(0, 0, 0)) as GameObject;
+                    gameObject.transform.GetChild(0).position + new Vector3(chunkWidth, 0, 0), Quaternion.Euler(0, 0, 0)) as GameObject;
+				chunk.GetComponent<Chunk> ().chunkWidth = chunkWidth;
 
                 chunk.transform.parent = transform;
                 chunk.transform.name = "Chunk " + _chunkCount;
@@ -76,7 +94,7 @@ public class ChunkController : MonoBehaviour
             for (int i = 0; i < gameObject.transform.childCount; i++)
             {
                 {
-                    if (gameObject.transform.GetChild(i).position.x + Chunk.chunkWidth / 2 <= _currentCameraPosition.x - Chunk.chunkWidth / 4)
+                    if (gameObject.transform.GetChild(i).position.x + chunkWidth / 2 <= _currentCameraPosition.x - chunkWidth / 4)
                     {
 
                         GameObject.Destroy(gameObject.transform.GetChild(i).gameObject);
@@ -93,10 +111,10 @@ public class ChunkController : MonoBehaviour
         {
             for(int i = 0; i < gameObject.transform.childCount; i++)
             {
-                Debug.DrawLine(new Vector2(gameObject.transform.GetChild(i).position.x - Chunk.chunkWidth / 2, gameObject.transform.GetChild(i).position.y + Chunk.chunkWidth / 2), new Vector2(gameObject.transform.GetChild(i).position.x - Chunk.chunkWidth / 2, gameObject.transform.GetChild(i).position.y - Chunk.chunkWidth / 2), new Color(1, 0, 0));
-                Debug.DrawLine(new Vector2(gameObject.transform.GetChild(i).position.x + Chunk.chunkWidth / 2, gameObject.transform.GetChild(i).position.y + Chunk.chunkWidth / 2), new Vector2(gameObject.transform.GetChild(i).position.x + Chunk.chunkWidth / 2, gameObject.transform.GetChild(i).position.y - Chunk.chunkWidth / 2), new Color(1, 0, 0));
-                Debug.DrawLine(new Vector2(gameObject.transform.GetChild(i).position.x - Chunk.chunkWidth / 2, gameObject.transform.GetChild(i).position.y + Chunk.chunkWidth / 2), new Vector2(gameObject.transform.GetChild(i).position.x + Chunk.chunkWidth / 2, gameObject.transform.GetChild(i).position.y + Chunk.chunkWidth / 2), new Color(1, 0, 0));
-                Debug.DrawLine(new Vector2(gameObject.transform.GetChild(i).position.x - Chunk.chunkWidth / 2, gameObject.transform.GetChild(i).position.y - Chunk.chunkWidth / 2), new Vector2(gameObject.transform.GetChild(i).position.x + Chunk.chunkWidth / 2, gameObject.transform.GetChild(i).position.y - Chunk.chunkWidth / 2), new Color(1, 0, 0));
+                Debug.DrawLine(new Vector2(gameObject.transform.GetChild(i).position.x - chunkWidth / 2, gameObject.transform.GetChild(i).position.y + chunkWidth / 2), new Vector2(gameObject.transform.GetChild(i).position.x - chunkWidth / 2, gameObject.transform.GetChild(i).position.y - chunkWidth / 2), new Color(1, 0, 0));
+                Debug.DrawLine(new Vector2(gameObject.transform.GetChild(i).position.x + chunkWidth / 2, gameObject.transform.GetChild(i).position.y + chunkWidth / 2), new Vector2(gameObject.transform.GetChild(i).position.x + chunkWidth / 2, gameObject.transform.GetChild(i).position.y - chunkWidth / 2), new Color(1, 0, 0));
+                Debug.DrawLine(new Vector2(gameObject.transform.GetChild(i).position.x - chunkWidth / 2, gameObject.transform.GetChild(i).position.y + chunkWidth / 2), new Vector2(gameObject.transform.GetChild(i).position.x + chunkWidth / 2, gameObject.transform.GetChild(i).position.y + chunkWidth / 2), new Color(1, 0, 0));
+                Debug.DrawLine(new Vector2(gameObject.transform.GetChild(i).position.x - chunkWidth / 2, gameObject.transform.GetChild(i).position.y - chunkWidth / 2), new Vector2(gameObject.transform.GetChild(i).position.x + chunkWidth / 2, gameObject.transform.GetChild(i).position.y - chunkWidth / 2), new Color(1, 0, 0));
             }
         }
     }
