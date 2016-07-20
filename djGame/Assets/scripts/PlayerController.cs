@@ -99,6 +99,7 @@ public class PlayerController : MonoBehaviour
 			collision = true;
 			score.PauseScore ();
 			healthController.LoseHealth (34);
+			GameObject.Destroy (other.gameObject);
 
 		}
 	}
