@@ -44,3 +44,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Ground
+    uniqueID: 2924322119
+    locked: 0
+  - name: Scenery
+    uniqueID: 3191556279
+    locked: 0
+  - name: Player
+    uniqueID: 3293003027
+    locked: 0
+  - name: Obstacles
+    uniqueID: 2985716273
+    locked: 0

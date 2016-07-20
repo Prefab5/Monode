@@ -26,25 +26,30 @@ public class Chunk : MonoBehaviour
     //Any objects in the chunk should be spawned here.
     private void Load()
     {
-		SpawnScenery ("Cactus", .04f, -.43f, new string[]{"cactus_a", "cactus_b"}); 
-
-		SpawnScenery ("Rock", .02f, -.7f); 
-
-		SpawnScenery ("Shrub", .10f, -.7f, new string[]{"shrub_a", "shrub_b"}); 
-
-		SpawnScenery ("Bones", .02f, -.6f, new string[]{"bones_a", "cowskull_a"}); 
-
+		
         /*Spawn ground obstacles,
         at a 10% chance per unit,
         with none closer than 5 units together,
         but none any farther than 10 units apart, at a height of 0.*/
-        SpawnPrefab("Ground_Obstacle", .20f, 4, 10, 0f);
+		SpawnPrefab("Ground_Obstacle", .20f, 4, 10, -0.42f);
 
-		SpawnPrefab("Desert Ground", 1f, 0, chunkWidth, -1, new string[]{"Desert_a", "Desert_b", "Desert_c"});
+		SpawnGround("Desert Ground", new string[]{"Desert_a", "Desert_b", "Desert_c"});
+
+		SpawnScenery ("Cactus", .04f, -.2f, new string[]{"cactus_a", "cactus_b"}); 
+
+		SpawnScenery ("Rock", .02f, -.45f); 
+
+		SpawnScenery ("Shrub", .10f, -.5f, new string[]{"shrub_a", "shrub_b"}); 
+
+		SpawnScenery ("Bones", .02f, -.5f, new string[]{"bones_a", "cowskull_a"}); 
 
 
 
+		SpawnScenery ("Sign", .01f, -0.12f); 
 
+		//Instantiate (Resources.Load ("Desert Ground") as GameObject, new Vector3 (0, 0, 0), Quaternion.Euler (0, 0, 0));
+
+//		gameObject.GetComponent<SpriteRenderer>().sortingOrder
 
         //If you want to spawn something rare, than do this.
         //SpawnPrefab("Rare_Thing", .02f, 0, chunkWidth);
@@ -76,6 +81,20 @@ public class Chunk : MonoBehaviour
 		}
 	}
 
+	private void SpawnGround(string prefab, string[] alternateSprites = null){
+
+		//Farthest left point in chunk.
+		Vector3 spawnLocation = new Vector3 (transform.position.x - chunkWidth / 2, -1, 0);
+
+		//Iterates through chunk left to right.
+		for (int i = 0; i < chunkWidth; i++) {
+			GameObject spawnedGround = Instantiate (Resources.Load (prefab), spawnLocation, Quaternion.Euler (0, 0, 0)) as GameObject;
+			spawnedGround.transform.parent = transform;
+			spawnedGround.name = prefab;
+			spawnLocation.x++;
+		}
+	}
+
     //Any gameObjects loaded in this chunk are despawned in Unload().
     public void Unload()
     {     
@@ -89,7 +108,7 @@ public class Chunk : MonoBehaviour
             i--;
         }
 
-        Debug.Log("Chunk #" + chunkNumber + " unloaded.");
+        print("Chunk #" + chunkNumber + " unloaded.");
     }
 
     /*Spawns prefabs across the chunk from the leftmost edge to the rightmost edge according to
@@ -99,6 +118,7 @@ public class Chunk : MonoBehaviour
         int noCloserThan,
 		int atleastOnePer, float height, string[] altSprites = null)
     {
+
         /*Clamps parameter [spawnChancePerUnit] so that my code doesn't crash if someone
         passes something like 5000 into it. It will just equate to 1 instead.*/
         spawnChancePerUnit = Mathf.Clamp(spawnChancePerUnit, 0, 1);
@@ -121,8 +141,8 @@ public class Chunk : MonoBehaviour
             too close to the player.*/
 			if (chunkNumber == 1 && i == 0 && ((GameObject) Resources.Load(prefabName)).tag != "Ground")
             {
-				i = Mathf.CeilToInt(chunkWidth/5*2);
-				indexPosition.x += Mathf.CeilToInt(chunkWidth/5*2);
+				i = Mathf.CeilToInt(chunkWidth/2);
+				indexPosition.x += Mathf.CeilToInt(chunkWidth/2);
             }
 
             //This is the if statement that will spawn a prefab by chance, according to
@@ -133,7 +153,6 @@ public class Chunk : MonoBehaviour
                 the current indexPosition.*/
                 GameObject spawnedPrefab = Object.Instantiate(Resources.Load(prefabName),
                     indexPosition, Quaternion.Euler(0, 0, 0)) as GameObject;
-
 				if (altSprites != null) {
 					spawnedPrefab.GetComponent<SpriteRenderer> ().sprite = Resources.Load <Sprite> (altSprites [Random.Range (0, altSprites.Length)]);
 				}
@@ -162,7 +181,7 @@ public class Chunk : MonoBehaviour
 
                     //Remove it from scene.
                     Object.Destroy(spawnedPrefab);
-                  
+
                 }
 
 				if(prefabsOfSameType.Count == 1){
@@ -172,8 +191,8 @@ public class Chunk : MonoBehaviour
 						if (transform.parent.GetChild(0).GetChild(j).name == prefabName) {
 							lastObject = transform.parent.GetChild(0).GetChild (j).gameObject;
 //							print("Distance to " + lastObject.name + " = " + Mathf.Abs (lastObject.transform.position.x - spawnedPrefab.transform.position.x));
-							if (Mathf.Abs (lastObject.transform.position.x - spawnedPrefab.transform.position.x) < noCloserThan) {
-//								print ("Deleting");
+							if (Mathf.Abs (lastObject.transform.position.x - spawnedPrefab.transform.position.x) <= noCloserThan) {
+
 								//Remove it from the similiar prefabs array.
 								prefabsOfSameType.Remove (spawnedPrefab);
 
