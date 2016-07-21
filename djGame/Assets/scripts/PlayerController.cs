@@ -67,6 +67,10 @@ public class PlayerController : MonoBehaviour
 		Jumping ();
 
 		Shooting ();
+
+		if (Input.touches.Length == 0) {
+			touched = false;
+		}
 	
 	}
 
@@ -109,9 +113,9 @@ public class PlayerController : MonoBehaviour
 		//Touch Device
 		foreach (Touch touch in Input.touches) {
 
-			if (touch.phase != TouchPhase.Ended && touch.phase != TouchPhase.Canceled) {
+			if (touch.phase != TouchPhase.Ended && touch.phase != TouchPhase.Canceled && !touched) {
 				if (touch.position.x > Screen.width / 2) {
-					if (isGrounded && !paused && !touched && !EventSystem.current.IsPointerOverGameObject (touch.fingerId)) {
+					if (isGrounded && !paused && !EventSystem.current.IsPointerOverGameObject (touch.fingerId)) {
 						rb2D.AddForce (new Vector2 (0, jumpHeight));
 						//So that jumping can only be triggered once per touch and release.
 						touched = true;
@@ -120,9 +124,7 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 
-		if (Input.touches.Length == 0) {
-			touched = false;
-		}
+
 
 
 	}
@@ -135,7 +137,7 @@ public class PlayerController : MonoBehaviour
 
 		//Touch Device
 		foreach (Touch touch in Input.touches) {
-			if (touch.phase != TouchPhase.Ended && touch.phase != TouchPhase.Canceled) {
+			if (touch.phase != TouchPhase.Ended && touch.phase != TouchPhase.Canceled && !touched) {
 				if (touch.position.x < Screen.width / 2) {
 					Shoot ();
 				}
