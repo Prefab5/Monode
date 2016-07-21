@@ -12,14 +12,17 @@ public class ChunkController : MonoBehaviour
     private static Vector2 _initialCameraPosition;
     private Vector2 _currentCameraPosition;
     private static int _chunkCount;
+
     public bool debug = true;
-    public float chunkMoveSpeed = 4f;
+    
+	public float chunkMoveSpeed = 4f;
+
 	private int chunkWidth = 10;
 
-    public bool _collision = false; 
-    private float _impactSpeedDecay = 0.1f;
-    private float _impactSpeedReduction = 0.1f;
-    public float _knockDownTime = 1f;
+    
+    
+    
+    
 
     void Start()
     {
@@ -51,7 +54,12 @@ public class ChunkController : MonoBehaviour
 
 		if (screenWidth > chunkWidth) {
 			//+5 to give th 5 units of travel time to load the next chunk.
-			chunkWidth = Mathf.CeilToInt (screenWidth+4);
+			chunkWidth = Mathf.CeilToInt (screenWidth+5);
+
+			//Must be even to prevent gap between chunks.
+			if (chunkWidth % 2 == 1) {
+				chunkWidth++;
+			}
 		}
 
 	}
@@ -121,43 +129,11 @@ public class ChunkController : MonoBehaviour
 
     void ChunkMovement()
     {
-        if (!_collision)
-        {
-            LeftMovement();
-        }
-        else
-        {
-            ChunkRebound();  
-        }
+        
+        LeftMovement();
+        
     }
-
-    public void ResumeMovement()
-    {
-        _collision = false;
-        _impactSpeedReduction = _impactSpeedDecay;
-    }
-
-    private void ChunkRebound()
-    {
-        for (int i = 0; i < gameObject.transform.childCount; i++)
-        {
-            gameObject.transform.GetChild(i).transform.Translate(new Vector2(1 * (chunkMoveSpeed - _impactSpeedReduction) * Time.deltaTime, 0));
-        }
-
-        if (_impactSpeedReduction < chunkMoveSpeed)
-        {
-            _impactSpeedReduction += _impactSpeedDecay;
-        }
-        else
-        {
-            _impactSpeedReduction = chunkMoveSpeed;
-        }
-    }
-
-    public void PlayerCollision()
-    {
-        _collision = true;
-    }
+		
 
     private void LeftMovement()
     {

@@ -43,19 +43,50 @@ public class Chunk : MonoBehaviour
 
 		SpawnScenery ("Bones", .02f, -.5f, new string[]{"bones_a", "cowskull_a"}); 
 
-
-
 		SpawnScenery ("Sign", .01f, -0.12f); 
 
-		//Instantiate (Resources.Load ("Desert Ground") as GameObject, new Vector3 (0, 0, 0), Quaternion.Euler (0, 0, 0));
+		SpawnPickup ("Ammo", 0.02f, -0.42f);
 
-//		gameObject.GetComponent<SpriteRenderer>().sortingOrder
-
-        //If you want to spawn something rare, than do this.
-        //SpawnPrefab("Rare_Thing", .02f, 0, chunkWidth);
-        //It will spawn at a 2% chance and disregards proximity.    
 
     }
+
+	private void SpawnPickup(string prefab, float spawnChance, float spawnHeight){
+		spawnChance = Mathf.Clamp01 (spawnChance);
+
+		//Farthest left point in chunk.
+		Vector2 spawnLocation = new Vector2 (transform.position.x - chunkWidth / 2, spawnHeight);
+		Vector2 startLocation = spawnLocation;
+
+		//Iterates through chunk left to right.
+		for (int i = 0; i < chunkWidth; i++) {
+			
+			//Chance to spawn.
+			if (Random.value < spawnChance) {
+
+				bool overlappingObstacle = false;
+				for (int j = 0; j < transform.childCount; j++) {
+					
+					if (spawnLocation.x == transform.GetChild (j).position.x
+					    &&
+						transform.GetChild (j).tag == "collision_obstacle") {
+//						print ("Overlap between me: " + spawnLocation.x + " and this:" + transform.GetChild (j).tag);
+						overlappingObstacle = true;
+					}
+				}
+
+				if (!overlappingObstacle) {
+
+					GameObject spawnedPickup = Instantiate (Resources.Load (prefab),
+						                           new Vector2 (spawnLocation.x, spawnLocation.y),
+						                           Quaternion.Euler (new Vector3 (0, 0, 0))) as GameObject;
+
+					spawnedPickup.transform.parent = transform;
+					spawnedPickup.name = prefab;
+				}
+			}
+			spawnLocation.x += 1;
+		}
+	}
 
 	private void SpawnScenery(string prefab, float spawnChance, float spawnHeight, string[] alternateSprites = null){
 		spawnChance = Mathf.Clamp01 (spawnChance);
@@ -68,16 +99,33 @@ public class Chunk : MonoBehaviour
 		for (int i = 0; i < chunkWidth; i++) {
 			//Chance to spawn.
 			if (Random.value < spawnChance) {
-				GameObject spawnedScenery = Instantiate (Resources.Load (prefab),
-					new Vector2 (spawnLocation.x + i, spawnLocation.y),
-					Quaternion.Euler(new Vector3(0,0,0))) as GameObject;
+
+				bool overlappingObstacle = false;
+				for (int j = 0; j < transform.childCount; j++) {
+
+					if (spawnLocation.x == transform.GetChild (j).position.x
+						&&
+						(transform.GetChild (j).tag == "Scenery" || transform.GetChild (j).tag == "collision_obstacle")) {
+
+//						print ("Overlap between" + (Resources.Load (prefab) as GameObject).tag + " and " + transform.GetChild (j).tag);
+
+						overlappingObstacle = true;
+					}
+				}
+
+				if (!overlappingObstacle) {
+					GameObject spawnedScenery = Instantiate (Resources.Load (prefab),
+						                           new Vector2 (spawnLocation.x, spawnLocation.y),
+						                           Quaternion.Euler (new Vector3 (0, 0, 0))) as GameObject;
 				
-				spawnedScenery.transform.parent = transform;
-				spawnedScenery.name = prefab;
-				if (alternateSprites != null) {
-					spawnedScenery.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite> (alternateSprites [Random.Range (0, alternateSprites.Length)]);
-				} 
+					spawnedScenery.transform.parent = transform;
+					spawnedScenery.name = prefab;
+					if (alternateSprites != null) {
+						spawnedScenery.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite> (alternateSprites [Random.Range (0, alternateSprites.Length)]);
+					} 
+				}
 			}
+			spawnLocation.x++;
 		}
 	}
 

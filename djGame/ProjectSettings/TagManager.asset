@@ -7,6 +7,8 @@ TagManager:
   - collision_obstacle
   - Ground
   - Scenery
+  - Ammo
+  - Bullet
   layers:
   - Default
   - TransparentFX

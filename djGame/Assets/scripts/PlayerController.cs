@@ -14,9 +14,6 @@ public class PlayerController : MonoBehaviour
 	public ChunkController chunkController;
 
 	private float jumpHeight = 500f;
-	private float knockDownTime = 2f;
-	private float timeKnockedDown = 0;
-	private bool collision = false;
 
 	//For detecting grounded state to allow jumping.
 	public Transform groundPoint;
@@ -36,8 +33,15 @@ public class PlayerController : MonoBehaviour
 	public GameObject Health;
 	private HealthController healthController;
 
+	public GameObject AmmoController;
+	private AmmoController ammoController;
+
 	private bool touched = false;
 
+	private bool recovering = false;
+	private float recoveryTime = 2;
+	private float timeRecovering = 0;
+	private float blinkSpeed = .5f;
 
 
 	void Start ()
@@ -48,71 +52,132 @@ public class PlayerController : MonoBehaviour
 		score.SetScoreRate (10);
 
 		healthController = Health.GetComponent<HealthController> ();
+		ammoController = AmmoController.GetComponent<AmmoController> ();
 	}
 
 	void Update ()
 	{
-		JumpControl ();
-
-		if (collision) {
-			KnockDown ();
-		}
+		Controls ();
+		Recovery ();
 
 	}
-
-	void JumpControl ()
+		
+	void Controls ()
 	{
+		Jumping ();
+
+		Shooting ();
+	
+	}
+
+	void Recovery(){
+		if (recovering) {
+			timeRecovering += Time.deltaTime;
+			print (timeRecovering % 1);
+			if (timeRecovering % blinkSpeed*2 > blinkSpeed || timeRecovering < blinkSpeed) {
+				GetComponent<SpriteRenderer> ().color = new Color (1, 1, 1, .5f);
+			} else {
+				GetComponent<SpriteRenderer> ().color = new Color (1, 1, 1, 1);
+			}
+
+			if (timeRecovering >= recoveryTime) {
+				recovering = false;
+				GetComponent<SpriteRenderer> ().color = new Color (1, 1, 1, 1);
+			}
+		} else {
+
+			//Reset timeRecovering.
+			timeRecovering = 0;
+		}
+	}
+
+	void Jumping(){
+
+		//PC
+
 		//Checks to see if player is in contact with ground directly beneath them.
 		isGrounded = Physics2D.OverlapCircle (groundPoint.position, groundPointRadius, groundMask);
 
+		//Check if game is paused.
 		paused = pause.GetComponent<Pause> ().paused;
 
 		//Jumping controls.
-		if (Input.GetKeyDown (KeyCode.Space) && isGrounded && !paused) {
+		if (Input.GetKeyDown (KeyCode.W) && isGrounded && !paused) {
 			rb2D.AddForce (new Vector2 (0, jumpHeight));
 
 		}
 
+		//Touch Device
 		foreach (Touch touch in Input.touches) {
 
 			if (touch.phase != TouchPhase.Ended && touch.phase != TouchPhase.Canceled) {
-				if (isGrounded && !paused && !touched && !EventSystem.current.IsPointerOverGameObject(touch.fingerId)) {
-					rb2D.AddForce (new Vector2 (0, jumpHeight));
-					touched = true;
-				}
-				if (EventSystem.current.IsPointerOverGameObject (touch.fingerId)) {
-					print ("UI");
+				if (touch.position.x > Screen.width / 2) {
+					if (isGrounded && !paused && !touched && !EventSystem.current.IsPointerOverGameObject (touch.fingerId)) {
+						rb2D.AddForce (new Vector2 (0, jumpHeight));
+						//So that jumping can only be triggered once per touch and release.
+						touched = true;
+					}
 				}
 			}
 		}
+
 		if (Input.touches.Length == 0) {
 			touched = false;
 		}
 
+
+	}
+
+	void Shooting(){
+		//PC
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			Shoot ();
+		}
+
+		//Touch Device
+		foreach (Touch touch in Input.touches) {
+			if (touch.phase != TouchPhase.Ended && touch.phase != TouchPhase.Canceled) {
+				if (touch.position.x < Screen.width / 2) {
+					Shoot ();
+				}
+			}
+		}
+	}
+
+	void Shoot(){
+		if (ammoController.Fireable()) {
+			
+			ammoController.DecreaseAmmoCount (1);
+			GameObject bullet = Instantiate(Resources.Load("Bullet"), new Vector3(transform.position.x + .75f,
+				transform.position.y + .125f , 0),
+				Quaternion.Euler(0,0,0)) as GameObject;
+
+			bullet.GetComponent<Bullet>().TravelDirection (new Vector2 (1, 0));
+
+			
+		}
 	}
 
 	void OnTriggerEnter2D (Collider2D other)
 	{
-        
-		if (other.gameObject.tag == "collision_obstacle") {
-			chunkController.PlayerCollision ();
-			collision = true;
-			score.PauseScore ();
-			healthController.LoseHealth (34);
-			GameObject.Destroy (other.gameObject);
+		DamageDealers (other);
 
+
+		if (other.gameObject.tag == "Ammo") {
+			ammoController.IncreaseAmmoCount (5);
+			Destroy (other.gameObject);
 		}
+
 	}
 
-	void KnockDown ()
-	{
-		timeKnockedDown += Time.deltaTime;
+	void DamageDealers(Collider2D other){
+		if (!recovering) {
+			if (other.gameObject.tag == "collision_obstacle") {
+				healthController.LoseHealth (34);
 
-		if (timeKnockedDown > knockDownTime) {
-			timeKnockedDown = 0;
-			collision = false;
-			chunkController.GetComponent<ChunkController> ().ResumeMovement ();
-			score.ResumeScore ();
+				recovering = true;
+
+			}
 		}
 	}
 
