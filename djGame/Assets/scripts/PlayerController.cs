@@ -73,7 +73,6 @@ public class PlayerController : MonoBehaviour
 	void Recovery(){
 		if (recovering) {
 			timeRecovering += Time.deltaTime;
-			print (timeRecovering % 1);
 			if (timeRecovering % blinkSpeed*2 > blinkSpeed || timeRecovering < blinkSpeed) {
 				GetComponent<SpriteRenderer> ().color = new Color (1, 1, 1, .5f);
 			} else {
@@ -152,7 +151,7 @@ public class PlayerController : MonoBehaviour
 				transform.position.y + .125f , 0),
 				Quaternion.Euler(0,0,0)) as GameObject;
 
-			bullet.GetComponent<Bullet>().TravelDirection (new Vector2 (1, 0));
+			bullet.GetComponent<Bullet>().TravelDirection (new Vector2 (-1, 0));
 
 			
 		}
@@ -179,6 +178,12 @@ public class PlayerController : MonoBehaviour
 
 			}
 		}
+			
+	}
+
+	public void Damage(int amount){
+		healthController.LoseHealth (amount);
+		recovering = true;
 	}
 
 }
