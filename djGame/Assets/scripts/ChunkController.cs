@@ -51,7 +51,12 @@ public class ChunkController : MonoBehaviour
 
 		if (screenWidth > chunkWidth) {
 			//+5 to give th 5 units of travel time to load the next chunk.
-			chunkWidth = Mathf.CeilToInt (screenWidth+4);
+			chunkWidth = Mathf.CeilToInt (screenWidth+5);
+
+			//Must be even to prevent gap between chunks.
+			if (chunkWidth % 2 == 1) {
+				chunkWidth++;
+			}
 		}
 
 	}
