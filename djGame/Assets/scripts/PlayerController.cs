@@ -14,9 +14,6 @@ public class PlayerController : MonoBehaviour
 	public ChunkController chunkController;
 
 	private float jumpHeight = 500f;
-	private float knockDownTime = 2f;
-	private float timeKnockedDown = 0;
-	private bool collision = false;
 
 	//For detecting grounded state to allow jumping.
 	public Transform groundPoint;
@@ -41,6 +38,10 @@ public class PlayerController : MonoBehaviour
 
 	private bool touched = false;
 
+	private bool recovering = false;
+	private float recoveryTime = 2;
+	private float timeRecovering = 0;
+	private float blinkSpeed = .5f;
 
 
 	void Start ()
@@ -57,10 +58,7 @@ public class PlayerController : MonoBehaviour
 	void Update ()
 	{
 		Controls ();
-
-		if (collision) {
-			KnockDown ();
-		}
+		Recovery ();
 
 	}
 		
@@ -70,6 +68,27 @@ public class PlayerController : MonoBehaviour
 
 		Shooting ();
 	
+	}
+
+	void Recovery(){
+		if (recovering) {
+			timeRecovering += Time.deltaTime;
+			print (timeRecovering % 1);
+			if (timeRecovering % blinkSpeed*2 > blinkSpeed || timeRecovering < blinkSpeed) {
+				GetComponent<SpriteRenderer> ().color = new Color (1, 1, 1, .5f);
+			} else {
+				GetComponent<SpriteRenderer> ().color = new Color (1, 1, 1, 1);
+			}
+
+			if (timeRecovering >= recoveryTime) {
+				recovering = false;
+				GetComponent<SpriteRenderer> ().color = new Color (1, 1, 1, 1);
+			}
+		} else {
+
+			//Reset timeRecovering.
+			timeRecovering = 0;
+		}
 	}
 
 	void Jumping(){
@@ -141,14 +160,8 @@ public class PlayerController : MonoBehaviour
 
 	void OnTriggerEnter2D (Collider2D other)
 	{
-        
-		if (other.gameObject.tag == "collision_obstacle") {
-			chunkController.PlayerCollision ();
-			collision = true;
-			score.PauseScore ();
-			healthController.LoseHealth (34);
-			GameObject.Destroy (other.gameObject);
-		}
+		DamageDealers (other);
+
 
 		if (other.gameObject.tag == "Ammo") {
 			ammoController.IncreaseAmmoCount (5);
@@ -157,15 +170,14 @@ public class PlayerController : MonoBehaviour
 
 	}
 
-	void KnockDown ()
-	{
-		timeKnockedDown += Time.deltaTime;
+	void DamageDealers(Collider2D other){
+		if (!recovering) {
+			if (other.gameObject.tag == "collision_obstacle") {
+				healthController.LoseHealth (34);
 
-		if (timeKnockedDown > knockDownTime) {
-			timeKnockedDown = 0;
-			collision = false;
-			chunkController.GetComponent<ChunkController> ().ResumeMovement ();
-			score.ResumeScore ();
+				recovering = true;
+
+			}
 		}
 	}
 
