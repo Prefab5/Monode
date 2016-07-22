@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debug: 1
-  chunkMoveSpeed: 4
+  chunkMoveSpeed: 5.5
 --- !u!4 &113026679
 Transform:
   m_ObjectHideFlags: 0
