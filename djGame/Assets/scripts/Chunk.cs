@@ -29,16 +29,9 @@ public class Chunk : MonoBehaviour
 	private void Load ()
 	{
 		
-		/*Spawn ground obstacles,
-        at a 10% chance per unit,
-        with none closer than 5 units together,
-        but none any farther than 10 units apart, at a height of 0.*/
-//		SpawnPrefab("Ground_Obstacle", .20f, 4, 10, -0.42f);
-
-
-
 		SpawnGround ("Desert Ground", new string[]{ "Desert_a", "Desert_b", "Desert_c" });
 
+		//Must be spawned after ground.
 		SpawnGroundObstacles ("Ground_Obstacle", .1f, 1, 3);
 
 		SpawnScenery ("Cactus", .04f, -.2f, new string[]{ "cactus_a", "cactus_b" }); 
@@ -71,6 +64,12 @@ public class Chunk : MonoBehaviour
 		//Iterate through chunk.
 		for (int i = 0; i < chunkWidth; i++) {
 
+			//Offset for player start.
+			if(chunkNumber == 1 && i == 0){
+				i = Mathf.RoundToInt(chunkWidth/8*5);
+				spawnLocation.x += Mathf.RoundToInt(chunkWidth/8*5);
+			}
+
 			//Spawn chance.
 			if (Random.value < spawnChance) {
 
@@ -79,13 +78,28 @@ public class Chunk : MonoBehaviour
 				RaycastHit2D hitInfo = Physics2D.Raycast (rayCastStart, Vector2.down, (float)chunkWidth, GroundLayerMask);
 				if (hitInfo.collider != null) {
 
+					//Check for this spawn location being too close to other, already spawned, ground obstacles.
 					bool tooClose = false;
 
-					//CHECK PREVIOUS CHUNK
-					//CHECK PREVIOUS CHUNK
-					//CHECK PREVIOUS CHUNK
-					//CHECK PREVIOUS CHUNK
+					//Check previous chunk.
+					if (transform.parent.childCount > 1) {
 
+						GameObject previousChunk = transform.parent.GetChild (0).gameObject;
+
+						for (int j = 0; j < previousChunk.transform.childCount; j++) {
+							
+
+							if (spawnLocation.x - previousChunk.transform.GetChild (j).transform.position.x <= 10 - (5 * difficulty)) {
+								
+								if (previousChunk.transform.GetChild (j).tag == "collision_obstacle") {
+									
+									tooClose = true;
+								}
+							}
+						}
+					}
+
+					//Check this chunk.
 					for (int j = 0; j < spawnedGroundObstacles.Count; j++) {
 						if (Mathf.Abs (((GameObject)spawnedGroundObstacles [j]).transform.position.x - spawnLocation.x) < 10 - (5 * difficulty)) {
 							tooClose = true;
