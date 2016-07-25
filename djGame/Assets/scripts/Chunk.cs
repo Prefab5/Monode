@@ -14,6 +14,8 @@ public class Chunk : MonoBehaviour
 	//Identification number of chunk.
 	public int chunkNumber;
 
+	public float difficulty;
+
 	public LayerMask GroundLayerMask;
 
 	public void Start ()
@@ -32,7 +34,7 @@ public class Chunk : MonoBehaviour
 		SpawnGround ("Desert Ground", new string[]{ "Desert_a", "Desert_b", "Desert_c" });
 
 		//Must be spawned after ground.
-		SpawnGroundObstacles ("Ground_Obstacle", .1f, 1, 3);
+		SpawnGroundObstacles ("Ground_Obstacle", .1f, difficulty, 3);
 
 		SpawnScenery ("Cactus", .04f, -.2f, new string[]{ "cactus_a", "cactus_b" }); 
 
