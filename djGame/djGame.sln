@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 
 Project("{9C3D7121-D10C-82CA-18C6-602755D7CA12}") = "djGame", "Assembly-CSharp.csproj", "{600BCBCB-7DC6-0335-D98A-7AB87B5F99DD}"
 EndProject
+Project("{9C3D7121-D10C-82CA-18C6-602755D7CA12}") = "djGame", "Assembly-CSharp-Editor.csproj", "{3DC1C0F1-F0B8-A7D3-4FB4-24047A9078EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{600BCBCB-7DC6-0335-D98A-7AB87B5F99DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{600BCBCB-7DC6-0335-D98A-7AB87B5F99DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{600BCBCB-7DC6-0335-D98A-7AB87B5F99DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DC1C0F1-F0B8-A7D3-4FB4-24047A9078EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DC1C0F1-F0B8-A7D3-4FB4-24047A9078EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DC1C0F1-F0B8-A7D3-4FB4-24047A9078EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DC1C0F1-F0B8-A7D3-4FB4-24047A9078EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

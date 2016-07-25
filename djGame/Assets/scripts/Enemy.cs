@@ -57,9 +57,6 @@ public class Enemy : MonoBehaviour {
 		if (hitInfo.collider != null) {
 			if (cooldown == 0) {
 				cooldown = attackCooldown;
-				print (hitInfo.transform.tag);
-				print (hitInfo.distance);
-				print (hitInfo.transform.name);
 				if (hitInfo.transform.tag == "Player") {
 					player.Damage (34);
 				}

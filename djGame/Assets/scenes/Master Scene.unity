@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debug: 1
-  chunkMoveSpeed: 4
+  chunkMoveSpeed: 5.5
 --- !u!4 &113026679
 Transform:
   m_ObjectHideFlags: 0
@@ -880,9 +880,9 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: -0.0146599375, y: -0.010645658}
+  m_Offset: {x: -0.03350494, y: -0.010645652}
   serializedVersion: 2
-  m_Size: {x: 0.22749749, y: 0.27939016}
+  m_Size: {x: 0.18980746, y: 0.27939016}
 --- !u!212 &1000382895
 SpriteRenderer:
   m_ObjectHideFlags: 0
