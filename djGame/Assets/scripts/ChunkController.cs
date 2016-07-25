@@ -11,13 +11,20 @@ public class ChunkController : MonoBehaviour
 
     private static Vector2 _initialCameraPosition;
     private Vector2 _currentCameraPosition;
+
     private static int _chunkCount;
 
     public bool debug = true;
-    
-	public float chunkMoveSpeed = 4f;
 
+	public float chunkMoveSpeed = 4f;
 	private int chunkWidth = 10;
+	private float difficulty = 0;
+
+	public GameObject scoreObject;
+	private ScoreController scoreController;
+
+	public GameObject enemyControllerObject;
+	private EnemyController enemyController;
 
     
     
@@ -26,6 +33,7 @@ public class ChunkController : MonoBehaviour
 
     void Start()
     {
+		InitializeDifficulty ();
 		ConfigureChunkWidth ();
 
         _initialCameraPosition = Camera.main.transform.position;
@@ -46,6 +54,14 @@ public class ChunkController : MonoBehaviour
 
 
     }
+
+	void InitializeDifficulty (){
+		scoreController = scoreObject.GetComponent<ScoreController> ();
+
+		enemyController = enemyControllerObject.GetComponent<EnemyController> ();
+		enemyController.difficulty = difficulty;
+
+	}
 
 	private void ConfigureChunkWidth (){
 
@@ -72,6 +88,14 @@ public class ChunkController : MonoBehaviour
         ChunkDebugRect();
     }
 
+	void AdjustGameDifficulty(){
+		//A factor of 500 means that at 500 score the difficulty will be maxed at 1.0f 
+		int factor = 500;
+
+		difficulty = Mathf.Clamp01 (scoreController.GetScore () / factor);
+		enemyController.difficulty = difficulty;
+	}
+
     void ChunkSpawnManagement()
     {
         _currentCameraPosition = Camera.main.transform.position;
@@ -81,11 +105,13 @@ public class ChunkController : MonoBehaviour
         {
             if (_currentCameraPosition.x >= gameObject.transform.GetChild(0).position.x + chunkWidth / 4)
             {
-               
+				
+				AdjustGameDifficulty ();
                 
                 GameObject chunk = Object.Instantiate(Resources.Load("Chunk"),
                     gameObject.transform.GetChild(0).position + new Vector3(chunkWidth, 0, 0), Quaternion.Euler(0, 0, 0)) as GameObject;
 				chunk.GetComponent<Chunk> ().chunkWidth = chunkWidth;
+				chunk.GetComponent<Chunk> ().difficulty = difficulty;
 
                 chunk.transform.parent = transform;
                 chunk.transform.name = "Chunk " + _chunkCount;

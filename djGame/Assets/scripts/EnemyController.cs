@@ -5,16 +5,20 @@ public class EnemyController : MonoBehaviour {
 
 	public GameObject player;
 
-	private int spawnTimer = 5;
+	private float spawnTimer = 5;
 	private float timer = 0;
+
+	public float difficulty = 0;
 
 	private float directionOfPlayer;
 
 	void Update(){
 		SpawnTiming ();
 	}
-
+		
 	void SpawnTiming(){
+		spawnTimer = 10 - (7 * difficulty);
+
 		if (timer >= spawnTimer) {
 			SpawnEnemy ();
 			timer = 0;

@@ -36,6 +36,10 @@ public class ScoreController : MonoBehaviour
 		}
 	}
 
+	public float GetScore(){
+		return score;
+	}
+
 	void IncrementScore ()
 	{
 		if (!pause) {
